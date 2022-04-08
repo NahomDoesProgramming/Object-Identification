@@ -1,5 +1,6 @@
 img = "";
-status = "";
+Status = "";
+objects = [];
 function setup()
 {
     canvas = createCanvas(640, 420);
@@ -14,22 +15,24 @@ function preload()
 function draw()
 {
     image(img, 0, 0, 640, 420);
-    fill("#2BE");
-    text("Dog", 45, 75);
-    noFill();
-    stroke("#2BE");
-    rect(30, 60, 450, 350);
-
-    fill("#FF0000");
-    text("Cat", 320, 120);
-    noFill();
-    stroke("#FF0000");
-    rect(300, 90, 270, 320);
+    if(Status != "")
+    {
+        for(i = 0; i < objects.length; i++)
+        {
+            document.getElementById("status").innerHTML = "Status: Object(s) Detected!";
+            fill("blue");
+            percent = floor(objects[i].confidence * 100);
+            text(objects[i].label + " " + percent + "%", objects[i].x, objects[i].y);
+            noFill();
+            stroke("blue");
+            rect(objects[i].x, objects[i].y, objects[i].width, objects[i].height);
+        }
+    }
 }
 function modelLoaded()
 {
     console.log("The model successfully loaded!");
-    status = true;
+    Status = true;
     objectDetector.detect(img, gotResult);
 }
 function gotResult(error, results)
@@ -39,4 +42,5 @@ function gotResult(error, results)
         console.log(error);
     }
     console.log(results);
+    objects = results;
 }
